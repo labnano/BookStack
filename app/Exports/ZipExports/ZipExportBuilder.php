@@ -97,7 +97,8 @@ class ZipExportBuilder
             $zip->addFromString("{$this->exportName}.md", $this->markdownContent);
         }
 
-        $zip->addFromString("{$this->exportName}.json", json_encode($this->data, JSON_PRETTY_PRINT));
+        $zip->addEmptyDir('data');
+        $zip->addFromString("data/{$this->exportName}.json", json_encode($this->data, JSON_PRETTY_PRINT));
         $zip->addEmptyDir('files');
 
         $toRemove = [];
