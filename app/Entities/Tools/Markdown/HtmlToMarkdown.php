@@ -56,7 +56,7 @@ class HtmlToMarkdown
                 $link = htmlspecialchars($link, ENT_QUOTES);
                 $text = htmlspecialchars($url, ENT_QUOTES);
 
-                return sprintf('<a href="%s">%s</a>', $link, $text);
+                return sprintf('<a href="%s" >%s</a>', $link, $text);
             },
             $html
         );
