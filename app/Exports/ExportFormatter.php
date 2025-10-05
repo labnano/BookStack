@@ -305,10 +305,10 @@ class ExportFormatter
     public function pageToMarkdown(Page $page): string
     {
         if ($page->markdown) {
-            return '# ' . $page->name . "\n\n" . $page->markdown;
+            return '### ' . $page->name . "\n\n" . $page->markdown;
         }
 
-        return '# ' . $page->name . "\n\n" . (new HtmlToMarkdown($page->html))->convert();
+        return '### ' . $page->name . "\n\n" . (new HtmlToMarkdown($page->html))->convert();
     }
 
     /**
@@ -316,7 +316,7 @@ class ExportFormatter
      */
     public function chapterToMarkdown(Chapter $chapter): string
     {
-        $text = '# ' . $chapter->name . "\n\n";
+        $text = '## ' . $chapter->name . "\n\n";
 
         $description = (new HtmlToMarkdown($chapter->descriptionHtml()))->convert();
         if ($description) {

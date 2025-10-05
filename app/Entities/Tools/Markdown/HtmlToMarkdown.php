@@ -45,7 +45,20 @@ class HtmlToMarkdown
         // Carriage returns can cause whitespace issues in output
         $html = str_replace("\r\n", "\n", $html);
         // Attributes on the pre tag can cause issues with conversion
-        return preg_replace('/<pre .*?>/', '<pre>', $html);
+        $html = preg_replace('/<pre .*?>/', '<pre>', $html);
+
+        // Replace <canvas data-pdfurl="..."></canvas> with a Markdown-style link
+        $html = preg_replace_callback(
+            '/<canvas[^>]*data-pdfurl="([^"]+)"[^>]*><\/canvas>/i',
+            function ($matches) {
+                $url = $matches[1];
+                // Return a clickable link in Markdown format
+                return sprintf('<a href="%1$s">%1$s</a>', htmlspecialchars($url, ENT_QUOTES));
+            },
+            $html
+        );
+
+        return $html;
     }
 
     /**
