@@ -79,7 +79,7 @@ class ZipExportBuilder
     {
         $this->references->buildReferences($this->files);
 
-        $this->data['exported_at'] = date(DATE_ATOM);
+        // $this->data['exported_at'] = date(DATE_ATOM);
         $this->data['instance'] = [
             'id'      => setting('instance-id', ''),
             'version' => AppVersion::get(),
