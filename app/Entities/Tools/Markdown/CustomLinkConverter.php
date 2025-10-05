@@ -16,17 +16,11 @@ class CustomLinkConverter extends LinkConverter
         $text  = \trim($element->getValue(), "\t\n\r\0\x0B");
 
         if ($title !== '') {
-            $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
-        } elseif ($href === $text && $this->isValidAutolink($href)) {
-            $markdown = '<' . $href . '>';
-        } elseif ($href === 'mailto:' . $text && $this->isValidEmail($text)) {
-            $markdown = '<' . $text . '>';
+            $markdown = '[' . $text . '](<' . $href . ' "' . $title . '")>';
         } else {
-            if (\stristr($href, ' ')) {
-                $href = '<' . $href . '>';
-            }
+            $href = '<' . $href . '>';
 
-            $markdown = '[' . $text . '](<' . $href . '>)';
+            $markdown = '[' . $text . '](' . $href . ')';
         }
 
         if (! $href) {
