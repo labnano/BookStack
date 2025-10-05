@@ -67,7 +67,7 @@ class ZipExportBuilder
 
         $this->references->addBook($exportBook);
         $this->markdownContent = $this->exportFormatter->bookToMarkdown($book);
-        $this->exportName = $book->slug;
+        $this->exportName = $book->name;
 
         return $this->build();
     }

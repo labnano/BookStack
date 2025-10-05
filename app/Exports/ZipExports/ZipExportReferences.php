@@ -104,11 +104,11 @@ class ZipExportReferences
             }
 
             if ($model instanceof Book) {
-                return "{$model->slug}.md";
+                return "{$model->name}.md";
             } else if ($model instanceof Chapter) {
-                return "{$model->book->slug}.md";
+                return "{$model->book->name}.md";
             } else if ($model instanceof Page) {
-                return "{$model->chapter->book->slug}.md";
+                return "{$model->chapter->book->name}.md";
             }
         };
 
