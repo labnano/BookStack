@@ -135,6 +135,6 @@ class ZipReferenceParser
             return preg_quote($url, '/');
         }, $urls));
 
-        return "/(({$urlBaseRegex}).*?)[\\t\\n\\f>\"'=?#()]/";
+	return "/(({$urlBaseRegex}).*?)[\\t\\n\\f>\"'=?#()\\]]/";
     }
 }
