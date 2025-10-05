@@ -90,7 +90,7 @@ class ZipExportReferences
             return strtr($url, $map);
         };
 
-        $handler = function (Model $model) {
+        $handler = function (Model $model) use ($encodeUrlForMarkdown) {
             if ($model instanceof Attachment) {
                 $fileName = $encodeUrlForMarkdown($model->id . '-' . $model->getFileName());
                 return "files/{$fileName}";
@@ -99,7 +99,7 @@ class ZipExportReferences
             if ($model instanceof Image) {
                 $extension = pathinfo($model->path, PATHINFO_EXTENSION);
                 $name = pathinfo($model->path, PATHINFO_FILENAME);
-                $fileName = $model->id . '-' . $name . '.' . $extension;
+                $fileName = $encodeUrlForMarkdown($model->id . '-' . $name . '.' . $extension);
                 return "files/{$fileName}";
             }
 
