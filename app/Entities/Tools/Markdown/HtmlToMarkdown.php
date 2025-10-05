@@ -53,7 +53,8 @@ class HtmlToMarkdown
             function ($matches) {
                 $url = $matches[1];
                 // Return a clickable link in Markdown format
-                $link = rawurlencode(htmlspecialchars($url, ENT_QUOTES));
+                $link = str_replace(' ', '%20', $url);
+                $link = htmlspecialchars($link, ENT_QUOTES);
                 $text = htmlspecialchars($url, ENT_QUOTES);
 
                 return sprintf('<a href="%s">%s</a>', $link, $text);
