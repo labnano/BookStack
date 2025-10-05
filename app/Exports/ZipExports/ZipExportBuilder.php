@@ -18,6 +18,7 @@ class ZipExportBuilder
     protected array $data = [];
 
     protected string $markdownContent = '';
+    protected string $exportName = '';
 
     public function __construct(
         protected ZipExportFiles $files,
@@ -35,6 +36,8 @@ class ZipExportBuilder
         $this->data['page'] = $exportPage;
 
         $this->references->addPage($exportPage);
+        $this->markdownContent = $this->exportFormatter->pageToMarkdown($page);
+        $this->exportName = $page->slug;
 
         return $this->build();
     }
@@ -48,6 +51,8 @@ class ZipExportBuilder
         $this->data['chapter'] = $exportChapter;
 
         $this->references->addChapter($exportChapter);
+        $this->markdownContent = $this->exportFormatter->chapterToMarkdown($chapter);
+        $this->exportName = $chapter->slug;
 
         return $this->build();
     }
@@ -62,6 +67,7 @@ class ZipExportBuilder
 
         $this->references->addBook($exportBook);
         $this->markdownContent = $this->exportFormatter->bookToMarkdown($book);
+        $this->exportName = $book->slug;
 
         return $this->build();
     }
@@ -88,10 +94,10 @@ class ZipExportBuilder
 
         if ($this->markdownContent !== '') {
             $this->markdownContent = $this->references->parseLocalReferences($this->markdownContent);
-            $zip->addFromString('content.md', $this->markdownContent);
+            $zip->addFromString("{$this->exportName}.md", $this->markdownContent);
         }
 
-        $zip->addFromString('data.json', json_encode($this->data));
+        $zip->addFromString("{$this->exportName}.json", json_encode($this->data, JSON_PRETTY_PRINT));
         $zip->addEmptyDir('files');
 
         $toRemove = [];
