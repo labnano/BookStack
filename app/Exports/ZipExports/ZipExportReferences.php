@@ -92,7 +92,7 @@ class ZipExportReferences
 
         $handler = function (Model $model) {
             if ($model instanceof Attachment) {
-                $fileName = encodeUrlForMarkdown($model->id . '-' . $model->getFileName());
+                $fileName = $encodeUrlForMarkdown($model->id . '-' . $model->getFileName());
                 return "files/{$fileName}";
             }
             
