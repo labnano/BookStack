@@ -62,9 +62,8 @@ class ZipExportFiles
 
         $existingFiles = $this->getAllFileNames();
         $extension = pathinfo($image->path, PATHINFO_EXTENSION);
-        do {
-            $fileName = Str::random(20) . '.' . $extension;
-        } while (in_array($fileName, $existingFiles));
+        $name = pathinfo($image->path, PATHINFO_FILENAME);
+        $fileName = $image->id . '-' . $name . '.' . $extension;
 
         $this->imageRefsById[$image->id] = $fileName;
 
