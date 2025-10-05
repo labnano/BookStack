@@ -74,11 +74,25 @@ class ZipExportReferences
         }
     }
 
+
     public function parseLocalReferences(string $content): string
     {
+        $encodeUrlForMarkdown = function (string $url) {
+            // Encode only characters that break Markdown/URLs
+            $map = [
+                '#' => '%23',
+                '(' => '%28',
+                ')' => '%29',
+                '[' => '%5B',
+                ']' => '%5D',
+                '%' => '%25',
+            ];
+            return strtr($url, $map);
+        };
+
         $handler = function (Model $model) {
             if ($model instanceof Attachment) {
-                $fileName = $model->id . '-' . $model->getFileName();
+                $fileName = encodeUrlForMarkdown($model->id . '-' . $model->getFileName());
                 return "files/{$fileName}";
             }
             
