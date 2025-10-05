@@ -1,5 +1,6 @@
 @include('layouts.parts.header-links-start')
 
+<a href="{{ url('/manager/') }}">@icon('folder')Arquivos</a>
 @if (user()->hasAppAccess())
     <a class="hide-over-l" href="{{ url('/search') }}">@icon('search'){{ trans('common.search') }}</a>
     @if(userCanOnAny('view', \BookStack\Entities\Models\Bookshelf::class) || userCan('bookshelf-view-all') || userCan('bookshelf-view-own'))

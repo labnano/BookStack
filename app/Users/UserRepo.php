@@ -77,6 +77,17 @@ class UserRepo
 
         $this->downloadAndAssignUserAvatar($user);
 
+
+	$parts = explode('@', $user->email);
+        $usrname = escapeshellarg($parts[0]);
+        $command = "sudo useradd {$usrname} -m -G share";
+        error_log($command, 0);
+        exec($command);
+
+	$passwd = $data['password'];
+        $command = "printf \"{$passwd}\n{$passwd}\n\" | sudo smbpasswd -a -s {$usrname}";
+        exec($command);
+
         return $user;
     }
 
@@ -127,6 +138,14 @@ class UserRepo
 
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
+	    $parts = explode('@', $user->email);
+	    $usrname = escapeshellarg($parts[0]);
+	    $passwd = $data['password']; // Sanitize the password
+
+	    // Construct the shell command
+	    $command = "printf \"{$passwd}\n{$passwd}\n\" | sudo smbpasswd -a -s {$usrname}";
+	    //error_log($command, 0);
+	    exec($command);
         }
 
         if (!empty($data['language'])) {
