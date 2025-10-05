@@ -9,7 +9,6 @@ use League\HTMLToMarkdown\Converter\EmphasisConverter;
 use League\HTMLToMarkdown\Converter\HardBreakConverter;
 use League\HTMLToMarkdown\Converter\HeaderConverter;
 use League\HTMLToMarkdown\Converter\HorizontalRuleConverter;
-use League\HTMLToMarkdown\Converter\LinkConverter;
 use League\HTMLToMarkdown\Converter\ListBlockConverter;
 use League\HTMLToMarkdown\Converter\ListItemConverter;
 use League\HTMLToMarkdown\Converter\PreformattedConverter;
@@ -96,7 +95,7 @@ class HtmlToMarkdown
         $environment->addConverter(new HeaderConverter());
         $environment->addConverter(new HorizontalRuleConverter());
         $environment->addConverter(new CustomImageConverter());
-        $environment->addConverter(new LinkConverter());
+        $environment->addConverter(new CustomLinkConverter());
         $environment->addConverter(new ListBlockConverter());
         $environment->addConverter(new ListItemConverter());
         $environment->addConverter(new CustomParagraphConverter());
