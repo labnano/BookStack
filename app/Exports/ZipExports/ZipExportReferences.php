@@ -78,14 +78,14 @@ class ZipExportReferences
     {
         $handler = function (Model $model) {
             if ($model instanceof Attachment) {
-                $fileName = $attachment->id . '-' . $attachment->getFileName();
+                $fileName = $model->id . '-' . $model->getFileName();
                 return "files/{$fileName}";
             }
-
+            
             if ($model instanceof Image) {
-                $extension = pathinfo($image->path, PATHINFO_EXTENSION);
-                $name = pathinfo($image->path, PATHINFO_FILENAME);
-                $fileName = $image->id . '-' . $name . '.' . $extension;
+                $extension = pathinfo($model->path, PATHINFO_EXTENSION);
+                $name = pathinfo($model->path, PATHINFO_FILENAME);
+                $fileName = $model->id . '-' . $name . '.' . $extension;
                 return "files/{$fileName}";
             }
 
