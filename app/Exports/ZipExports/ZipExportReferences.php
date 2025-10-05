@@ -74,6 +74,33 @@ class ZipExportReferences
         }
     }
 
+    public function parseLocalReferences(string $content): string
+    {
+        $handler = function (Model $model) {
+            if ($model instanceof Attachment) {
+                $fileName = $attachment->id . '-' . $attachment->getFileName();
+                return "files/{$fileName}";
+            }
+
+            if ($model instanceof Image) {
+                $extension = pathinfo($image->path, PATHINFO_EXTENSION);
+                $name = pathinfo($image->path, PATHINFO_FILENAME);
+                $fileName = $image->id . '-' . $name . '.' . $extension;
+                return "files/{$fileName}";
+            }
+
+            if ($model instanceof Book) {
+                return "{$model->slug}.md";
+            } else if ($model instanceof Chapter) {
+                return "{$model->book->slug}.md";
+            } else if ($model instanceof Page) {
+                return "{$model->chapter->book->slug}.md";
+            }
+        };
+
+        return $this->parser->parseLinks($content, $handler);
+    }
+
     public function buildReferences(ZipExportFiles $files): void
     {
         $createHandler = function (ZipExportModel $zipModel) use ($files) {

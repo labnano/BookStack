@@ -39,10 +39,7 @@ class ZipExportFiles
             return $this->attachmentRefsById[$attachment->id];
         }
 
-        $existingFiles = $this->getAllFileNames();
-        do {
-            $fileName = Str::random(20) . '.' . $attachment->extension;
-        } while (in_array($fileName, $existingFiles));
+        $fileName = $attachment->id . '-' . $attachment->getFileName();
 
         $this->attachmentRefsById[$attachment->id] = $fileName;
 
@@ -60,7 +57,6 @@ class ZipExportFiles
             return $this->imageRefsById[$image->id];
         }
 
-        $existingFiles = $this->getAllFileNames();
         $extension = pathinfo($image->path, PATHINFO_EXTENSION);
         $name = pathinfo($image->path, PATHINFO_FILENAME);
         $fileName = $image->id . '-' . $name . '.' . $extension;

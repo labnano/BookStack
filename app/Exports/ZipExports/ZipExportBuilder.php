@@ -10,15 +10,19 @@ use BookStack\Exceptions\ZipExportException;
 use BookStack\Exports\ZipExports\Models\ZipExportBook;
 use BookStack\Exports\ZipExports\Models\ZipExportChapter;
 use BookStack\Exports\ZipExports\Models\ZipExportPage;
+use BookStack\Exports\ExportFormatter;
 use ZipArchive;
 
 class ZipExportBuilder
 {
     protected array $data = [];
 
+    protected string $markdownContent = '';
+
     public function __construct(
         protected ZipExportFiles $files,
         protected ZipExportReferences $references,
+        protected ExportFormatter $exportFormatter,
     ) {
     }
 
@@ -57,6 +61,7 @@ class ZipExportBuilder
         $this->data['book'] = $exportBook;
 
         $this->references->addBook($exportBook);
+        $this->markdownContent = $this->exportFormatter->bookToMarkdown($book);
 
         return $this->build();
     }
@@ -79,6 +84,11 @@ class ZipExportBuilder
         $opened = $zip->open($zipFile, ZipArchive::OVERWRITE);
         if ($opened !== true) {
             throw new ZipExportException('Failed to create zip file for export.');
+        }
+
+        if ($this->markdownContent !== '') {
+            $this->markdownContent = $this->references->parseLocalReferences($this->markdownContent);
+            $zip->addFromString('content.md', $this->markdownContent);
         }
 
         $zip->addFromString('data.json', json_encode($this->data));
