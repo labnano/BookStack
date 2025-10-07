@@ -95,7 +95,9 @@ class LoginController extends Controller
      */
     public function logout()
     {
-        header('Set-Cookie: auth=a; Path=/manager/api/; Domain=labnano.fisica.ufmg.br; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=Strict');
+        header('Set-Cookie: auth=; Path=/manager/api/; Max-Age=0; HttpOnly;');
+        header('Set-Cookie: admin=; Path=/manager/admin/api/; Max-Age=0');
+        header('Set-Cookie: proof=; Path=/manager/api/; Max-Age=0');
         return redirect($this->loginService->logout());
     }
 
