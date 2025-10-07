@@ -138,7 +138,7 @@ class LoginController extends Controller
         curl_close($ch);
 
         // Extract Filestash cookie
-        if (preg_match('/Set-Cookie:\s*([^;]+)/i', $headers, $matches)) {
+        if (preg_match('/^Set-Cookie:\s*(auth=[^;]+)/mi', $headers, $matches)) {
             header("Set-Cookie: {$matches[1]}; Path=/manager/api/; Secure; HttpOnly; SameSite=Lax");
         }
     }
