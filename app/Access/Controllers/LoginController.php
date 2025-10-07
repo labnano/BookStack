@@ -95,6 +95,7 @@ class LoginController extends Controller
      */
     public function logout()
     {
+        header('Set-Cookie: auth=; Path=/manager/api/; Domain=labnano.fisica.ufmg.br; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Secure; HttpOnly; SameSite=Lax');
         return redirect($this->loginService->logout());
     }
 
@@ -114,6 +115,34 @@ class LoginController extends Controller
         return $request->only('username', 'email', 'password');
     }
 
+    protected function filestashSession(Request $request)
+    {
+        $username = $request->get($this->username());
+        $password = $request->get('password', '');
+
+        $ch = curl_init('https://labnano.fisica.ufmg.br/manager/api/session/auth/?label=samba&state=');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query([
+                'username' => $username,
+                'password' => $password,
+            ]),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
+        ]);
+
+        $response = curl_exec($ch);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $headers = substr($response, 0, $headerSize);
+        curl_close($ch);
+
+        // Extract Filestash cookie
+        if (preg_match('/Set-Cookie:\s*([^;]+)/i', $headers, $matches)) {
+            header("Set-Cookie: {$matches[1]}; Path=/manager/api/; Secure; HttpOnly; SameSite=Lax");
+        }
+    }
+
     /**
      * Send the response after the user was authenticated.
      * @return RedirectResponse
@@ -122,7 +151,12 @@ class LoginController extends Controller
     {
         $request->session()->regenerate();
         $this->clearLoginAttempts($request);
-
+    
+        try {
+            $this->filestashSession($request);
+        } catch (\Throwable $e) {
+        }
+    
         return redirect()->intended('/');
     }
 
