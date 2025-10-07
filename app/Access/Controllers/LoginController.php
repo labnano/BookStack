@@ -117,7 +117,8 @@ class LoginController extends Controller
 
     protected function filestashSession(Request $request)
     {
-        $username = $request->get($this->username());
+        $parts = explode('@', $request->get($this->username()));
+        $usrname = escapeshellarg($parts[0]);
         $password = $request->get('password', '');
 
         $ch = curl_init('https://labnano.fisica.ufmg.br/manager/api/session/auth/?label=samba&state=');
