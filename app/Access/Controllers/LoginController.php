@@ -95,7 +95,7 @@ class LoginController extends Controller
      */
     public function logout()
     {
-        header('Set-Cookie: auth=; Path=/manager/api/; Domain=labnano.fisica.ufmg.br; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Secure; HttpOnly; SameSite=Lax');
+        header('Set-Cookie: auth=a; Path=/manager/api/; Domain=labnano.fisica.ufmg.br; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=Strict');
         return redirect($this->loginService->logout());
     }
 
@@ -118,18 +118,21 @@ class LoginController extends Controller
     protected function filestashSession(Request $request)
     {
         $parts = explode('@', $request->get($this->username()));
-        $username = escapeshellarg($parts[0]);
+        $username = $parts[0];
         $password = $request->get('password', '');
+
+	$body = http_build_query([
+                'user' => $username,
+                'password' => $password,
+            ]);
+
 
         $ch = curl_init('https://labnano.fisica.ufmg.br/manager/api/session/auth/?label=samba&state=');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HEADER => true,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query([
-                'username' => $username,
-                'password' => $password,
-            ]),
+            CURLOPT_POSTFIELDS => $body,
             CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
         ]);
 
@@ -139,9 +142,11 @@ class LoginController extends Controller
         curl_close($ch);
 
         // Extract Filestash cookie
-        if (preg_match('/^Set-Cookie:\s*(auth=[^;]+)/mi', $headers, $matches)) {
-            header("Set-Cookie: {$matches[1]}; Path=/manager/api/; Secure; HttpOnly; SameSite=Lax");
-        }
+	if (preg_match_all('/^Set-Cookie:\s*([^\r\n]+)/mi', $headers, $all_cookies)) {
+    	    foreach ($all_cookies[1] as $cookie) {
+                header("Set-Cookie: $cookie");
+	    }
+	}
     }
 
     /**
