@@ -93,12 +93,15 @@ class LoginController extends Controller
     /**
      * Logout user and perform subsequent redirect.
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        header('Set-Cookie: auth=; Path=/manager/api/; Max-Age=0; HttpOnly;');
-        header('Set-Cookie: admin=; Path=/manager/admin/api/; Max-Age=0');
-        header('Set-Cookie: proof=; Path=/manager/api/; Max-Age=0');
-        return redirect($this->loginService->logout());
+        $response = redirect($this->loginService->logout());
+
+        $response->header('Set-Cookie', 'auth=; Path=/manager/api/; Max-Age=0; HttpOnly;');
+        $response->header('Set-Cookie', 'admin=; Path=/manager/admin/api/; Max-Age=0');
+        $response->header('Set-Cookie', 'proof=; Path=/manager/api/; Max-Age=0');
+
+        return $response;
     }
 
     /**
